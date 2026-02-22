@@ -62,7 +62,34 @@ export default function LoginPage() {
             required
           />
         </label>
-
+<button
+  type="button"
+  disabled={loading || !email}
+  onClick={async () => {
+    setLoading(true)
+    setMsg(null)
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      })
+      if (error) throw error
+      setMsg('Password reset email sent. Check your inbox.')
+    } catch (err: any) {
+      setMsg(err?.message ?? 'Failed to send reset email.')
+    } finally {
+      setLoading(false)
+    }
+  }}
+  style={{
+    padding: 12,
+    borderRadius: 10,
+    border: '1px solid #eee',
+    cursor: 'pointer',
+    background: 'white',
+  }}
+>
+  Forgot password?
+</button>
         <button
           type="submit"
           disabled={loading}
